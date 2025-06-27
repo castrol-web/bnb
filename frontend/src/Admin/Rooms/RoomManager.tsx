@@ -83,7 +83,6 @@ const RoomManager: React.FC = () => {
         const abortController = new AbortController();
         setController(abortController);
         setLoading(true);
-
         try {
             if (!frontImage && !existingFrontImage) {
                 toast.error("Front view image is required.");

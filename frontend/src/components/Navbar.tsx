@@ -135,7 +135,7 @@ function Navbar() {
 
       {/* Mobile Menu */}
       {menuOpen && (
-        <div className="w-full px-4 py-4 shadow-md bg-base-100 flex flex-col gap-2 lg:hidden">
+        <div className="w-full px-4 py-4 shadow-md flex flex-col gap-2 lg:hidden bg-[#131010]">
           {navLinks.map((link) => (
             <NavLink
               key={link.name}
