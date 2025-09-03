@@ -1,0 +1,191 @@
+{
+  "intents": [
+    {
+      "tag": "greet",
+      "patterns": [
+        "hi",
+        "hello",
+        "hey",
+        "good morning",
+        "good afternoon",
+        "good evening",
+        "hiya",
+        "hello there",
+        "howdy",
+        "hey there"
+      ],
+      "responses": [
+        "Hello! Welcome to our BnB. How can I assist you today?",
+        "Hi there! Need help with bookings or information?",
+        "Greetings! How can I make your stay comfortable?"
+      ]
+    },
+    {
+      "tag": "book_room",
+      "patterns": [
+        "I want to book a room",
+        "Can I reserve a room?",
+        "How do I book a room?",
+        "Do you have any rooms available?",
+        "Book a room for me",
+        "I want to make a reservation",
+        "Room booking process",
+        "Is the hotel available for booking?"
+      ],
+      "responses": [
+        "Sure! You can book a room on our website or tell me your check-in and check-out dates.",
+        "I'd be happy to help you book a room. What dates are you interested in?",
+        "Please share your preferred dates and room type to start your booking."
+      ]
+    },
+    {
+      "tag": "check_availability",
+      "patterns": [
+        "Are rooms available from June 10 to June 15?",
+        "Is there availability next weekend?",
+        "Do you have rooms free on these dates?",
+        "Check room availability",
+        "Can I check if rooms are available?",
+        "Are any rooms open for July?"
+      ],
+      "responses": [
+        "Please provide your check-in and check-out dates, and I will check availability for you.",
+        "Let me know your desired dates, and I'll check if we have rooms available.",
+        "We usually have rooms available, but please tell me your dates to confirm."
+      ]
+    },
+    {
+      "tag": "amenities",
+      "patterns": [
+        "What amenities do you offer?",
+        "Do you have Wi-Fi?",
+        "Is breakfast included?",
+        "Tell me about your facilities",
+        "Do rooms have air conditioning?",
+        "Is parking available?",
+        "What services come with the room?"
+      ],
+      "responses": [
+        "We offer free Wi-Fi, breakfast, air conditioning, parking, and more to make your stay comfortable.",
+        "Our amenities include Wi-Fi, complimentary breakfast, parking, and daily housekeeping.",
+        "Yes, we have air conditioning, free Wi-Fi, parking, and a cozy breakfast area."
+      ]
+    },
+    {
+      "tag": "pricing",
+      "patterns": [
+        "How much does a room cost?",
+        "What are your rates?",
+        "Tell me the price for a single room",
+        "Room rates",
+        "Is there a discount for long stays?",
+        "Do you have special offers?"
+      ],
+      "responses": [
+        "Room prices vary depending on the season and room type. Please specify your dates for an exact quote.",
+        "Our rates start at $50 per night for a single room. Longer stays may qualify for discounts.",
+        "Please share your check-in and check-out dates to get the best pricing information."
+      ]
+    },
+    {
+      "tag": "check_in_out",
+      "patterns": [
+        "What is the check-in time?",
+        "When can I check out?",
+        "Check-in and check-out times",
+        "What time is check-in?",
+        "When do I need to leave the room?",
+        "Check-out policy"
+      ],
+      "responses": [
+        "Check-in starts at 2 PM and check-out is by 11 AM.",
+        "You can check in from 2 PM onwards, and check-out should be done by 11 AM.",
+        "Our check-in time is 2 PM, and check-out is before 11 AM."
+      ]
+    },
+    {
+      "tag": "cancellation_policy",
+      "patterns": [
+        "What is your cancellation policy?",
+        "Can I cancel my booking?",
+        "How do I cancel a reservation?",
+        "Is there a fee for cancellations?",
+        "Tell me about your refund policy",
+        "What happens if I cancel late?"
+      ],
+      "responses": [
+        "You can cancel your booking up to 24 hours before check-in without any fee.",
+        "Cancellations within 24 hours of check-in may incur a fee. Please contact us for details.",
+        "Our cancellation policy allows free cancellation up to 24 hours prior to your arrival."
+      ]
+    },
+    {
+      "tag": "parking",
+      "patterns": [
+        "Do you have parking?",
+        "Is parking available?",
+        "Where can I park my car?",
+        "Do you offer free parking?",
+        "Is there a garage or lot for guests?"
+      ],
+      "responses": [
+        "Yes, we offer free on-site parking for all guests.",
+        "Parking is available and included with your stay.",
+        "We have secure parking spaces available for guests."
+      ]
+    },
+    {
+      "tag": "pet_policy",
+      "patterns": [
+        "Do you allow pets?",
+        "Can I bring my dog?",
+        "Are pets allowed?",
+        "What's your pet policy?",
+        "Is there an extra charge for pets?"
+      ],
+      "responses": [
+        "We are a pet-friendly BnB! Please let us know if you're bringing a pet.",
+        "Pets are welcome with prior notice. Additional charges may apply.",
+        "Yes, pets are allowed. Contact us to discuss pet policies."
+      ]
+    },
+    {
+      "tag": "thank_you",
+      "patterns": [
+        "Thanks",
+        "Thank you",
+        "Thanks a lot",
+        "Thanks for your help",
+        "Thank you very much"
+      ],
+      "responses": [
+        "You're welcome! Let me know if you need anything else.",
+        "Happy to help! Enjoy your stay.",
+        "Anytime! Feel free to ask if you have more questions."
+      ]
+    },
+    {
+      "tag": "contact_agent",
+      "patterns": [
+        "I want to talk to a human",
+        "Can I speak to an agent?",
+        "Help from a real person",
+        "Can you connect me to support?",
+        "I need real assistance"
+      ],
+      "responses": [
+        "Sure! You can contact our agent directly on WhatsApp: https://wa.me/+255657849224",
+        "For personalized help, message our agent on WhatsApp: +255657849224"
+      ]
+    },
+    {
+      "tag": "fallback",
+      "patterns": [],
+      "responses": [
+        "Sorry, I didn't understand that. Can you please rephrase?",
+        "I'm not sure I follow. Could you ask differently?",
+        "Hmm, I didn't get that. Please ask about bookings, amenities, or policies."
+      ]
+    }
+  ]
+}
