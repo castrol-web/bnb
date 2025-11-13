@@ -84,7 +84,7 @@ import numpy as np
 # ======================
 # Config
 # ======================
-WHATSAPP_NUMBER = os.getenv("WHATSAPP_NUMBER", "+255657849224")
+WHATSAPP_NUMBER = os.getenv("WHATSAPP_NUMBER", "+255712639813")
 CONFIDENCE_THRESHOLD = 0.6
 MODEL_NAME = 'paraphrase-MiniLM-L6-v2'  # Small but accurate
 

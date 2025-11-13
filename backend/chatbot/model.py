@@ -13,7 +13,7 @@ with open(os.path.join(BASE_DIR, 'intent.json'), 'r') as f:
     intents = json.load(f)
 
 CONFIDENCE_THRESHOLD = 0.6
-WHATSAPP_LINK = "https://wa.me/+255657849224"
+WHATSAPP_LINK = "https://wa.me/+255712639813"
 
 def get_response(user_input):
     X_vect = pipeline.named_steps['vectorizer'].transform([user_input])
