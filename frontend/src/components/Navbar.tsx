@@ -22,7 +22,6 @@ function Navbar() {
     { name: t("OUR ROOMS"), to: "/our-rooms" },
     { name: t("ABOUT"), to: "/about" },
     { name: t("CONTACT US"), to: "/contact" },
-    { name: t("ADVENTURES"), to: "/adventures" },
   ];
 
   return (
