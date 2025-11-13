@@ -3,7 +3,6 @@ import { FaComments, FaWhatsapp } from "react-icons/fa";
 import { motion, AnimatePresence } from "framer-motion";
 import { FiX } from "react-icons/fi";
 const url = import.meta.env.VITE_CHATBOT_URL;
-const WHATSAPP_NUMBER = "+255764338937";
 import { useTranslation } from "react-i18next";
 
 interface Message {
@@ -145,7 +144,7 @@ const ChatWidget = () => {
                         {shouldShowWhatsApp() && (
                             <div className="p-4 border-t border-gray-200">
                                 <a
-                                    href={`https://wa.me/${WHATSAPP_NUMBER.replace(/\D/g, "")}`}
+                                    href={`https://wa.me/${"+255764338937".replace(/\D/g, "")}`}
                                     target="_blank"
                                     rel="noopener noreferrer"
                                     className="btn btn-success btn-block gap-2"
