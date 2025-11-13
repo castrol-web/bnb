@@ -73,77 +73,102 @@
 # if __name__ == '__main__':
 #     port = int(os.environ.get("PORT", 5000))
 #     app.run(host="0.0.0.0", port=port)
-
 from flask import Flask, request, jsonify
 from flask_cors import CORS
-import os
-import pickle
+from sentence_transformers import SentenceTransformer, util
 import json
 import random
+import os
 import numpy as np
-from dotenv import load_dotenv
 
-load_dotenv()
+# ======================
+# Config
+# ======================
+WHATSAPP_NUMBER = os.getenv("WHATSAPP_NUMBER", "+255657849224")
+CONFIDENCE_THRESHOLD = 0.6
+MODEL_NAME = 'paraphrase-MiniLM-L6-v2'  # Small but accurate
 
+# ======================
+# Initialize App
+# ======================
 app = Flask(__name__)
-CORS(app, origins=["https://bnabfrontend.onrender.com"])  # Allow only your frontend
+CORS(app, origins=["http://localhost:5173"])
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-MODEL_FILE = os.path.join(BASE_DIR, 'model.pkl')
 INTENT_FILE = os.path.join(BASE_DIR, 'intent.json')
 
-# Load model and intents
-with open(MODEL_FILE, 'rb') as f:
-    pipeline = pickle.load(f)
-
+# Load intents
 with open(INTENT_FILE, 'r') as f:
     intents = json.load(f)
 
-WHATSAPP_NUMBER = os.getenv("WHATSAPP_NUMBER", "+255657849224")
-CONFIDENCE_THRESHOLD = float(os.getenv("CONFIDENCE_THRESHOLD", 0.6))
+# Load embedding model
+embed_model = SentenceTransformer(MODEL_NAME)
 
-def get_response(user_input):
-    X = pipeline.named_steps['vectorizer'].transform([user_input])
-    probs = pipeline.named_steps['classifier'].predict_proba(X)[0]
-    confidence = np.max(probs)
-    tag = pipeline.named_steps['classifier'].classes_[np.argmax(probs)]
+# Precompute embeddings for all patterns
+intent_patterns = []
+for intent in intents['intents']:
+    for pattern in intent['patterns']:
+        intent_patterns.append({
+            "tag": intent['tag'],
+            "pattern": pattern,
+            "embedding": embed_model.encode(pattern, convert_to_tensor=True),
+            "responses": intent['responses']
+        })
 
-    if confidence < CONFIDENCE_THRESHOLD or tag == "contact_agent":
-        return (
-            f"Let me connect you to a real agent on WhatsApp: {WHATSAPP_NUMBER}",
-            "fallback",
-            True
-        )
+# ======================
+# Response Logic
+# ======================
+def get_response(user_input: str):
+    user_embedding = embed_model.encode(user_input, convert_to_tensor=True)
+    
+    # Compute cosine similarity with all patterns
+    scores = [util.cos_sim(user_embedding, p['embedding']).item() for p in intent_patterns]
+    best_idx = np.argmax(scores)
+    best_score = scores[best_idx]
+    best_pattern = intent_patterns[best_idx]
 
-    for intent in intents['intents']:
-        if intent['tag'] == tag:
-            return random.choice(intent['responses']), tag, False
+    # If confidence low or contact_agent intent → forward to WhatsApp
+    if best_score < CONFIDENCE_THRESHOLD or best_pattern['tag'] == "contact_agent":
+        return {
+            "response": f"I'm forwarding you to a real agent on WhatsApp: {WHATSAPP_NUMBER}",
+            "intent": "fallback",
+            "showWhatsapp": True,
+            "whatsappNumber": WHATSAPP_NUMBER
+        }
 
-    # Fallback
-    for intent in intents['intents']:
-        if intent['tag'] == "fallback":
-            return random.choice(intent['responses']), "fallback", True
+    # Otherwise, return a random response from the best intent
+    response_text = random.choice(best_pattern['responses'])
+    return {
+        "response": response_text,
+        "intent": best_pattern['tag'],
+        "showWhatsapp": False,
+        "whatsappNumber": None
+    }
 
-    return "Sorry, something went wrong.", "error", True
-
+# ======================
+# Flask Routes
+# ======================
 @app.route("/chat", methods=["POST"])
 def chat():
     data = request.get_json()
-    message = data.get("message", "")
+    message = data.get("message", "").strip()
 
-    if not message.strip():
-        return jsonify({'response': "Please type something.", 'intent': 'fallback', 'showWhatsapp': False})
+    if not message:
+        return jsonify({
+            "response": "Please type something to continue.",
+            "intent": "fallback",
+            "showWhatsapp": False,
+            "whatsappNumber": None
+        })
 
-    response_text, intent_tag, show_whatsapp = get_response(message)
+    result = get_response(message)
+    return jsonify(result)
 
-    return jsonify({
-        'response': response_text,
-        'intent': intent_tag,
-        'showWhatsapp': show_whatsapp,
-        'whatsappNumber': WHATSAPP_NUMBER if show_whatsapp else None
-    })
-
+# ======================
+# Run App
+# ======================
 if __name__ == '__main__':
     port = int(os.environ.get("PORT", 5000))
     app.run(host="0.0.0.0", port=port)
+
 

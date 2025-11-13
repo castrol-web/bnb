@@ -5,7 +5,12 @@ type mailparams = {
     userName: string;
     token: string;
 }
-export const sendConfirmationMail = async ({userEmail, userName, token}:mailparams) => {
+export const sendConfirmationMail = async ({ userEmail, userName, token }: mailparams) => {
     const mailoptions = getMailOptions(userEmail, userName, token)
-    transport.sendMail(mailoptions)
+    try {
+        await transport.sendMail(mailoptions)
+    } catch (error: any) {
+        console.error("Email sending failed:", error.message);
+    }
+
 }

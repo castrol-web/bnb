@@ -50,7 +50,7 @@ const defaultValues = {
 };
 
 const AmenityChoices = [
-    "Room 20m²","Room 23m²","toiletries","Cooling fun","clothes rack","bedside table","Room 22m²","safe box", "Room 26m²","Room 19m²", "Toothbrush", "Shampoo", "Slippers", "Room 16m²", "Room 24m²", "Room 28m²", "Double Beds", "Single Bed", "Tripple", "Smart TV", "Sauna", "Room Service", "Bath tab",
+    "Room 20m²","Room 23m²","toiletries","Cooling fan","clothes rack","bedside table","Room 22m²","safe box", "Room 26m²","Room 19m²", "Toothbrush", "Shampoo", "Slippers", "Room 16m²", "Room 24m²", "Room 28m²", "Double Beds", "Single Bed", "Tripple", "Smart TV", "Sauna", "Room Service", "Bath tab",
     "AC", "Booking", "Storage", "Outdoor Kitchen", "Towels",
     "Big Wardrobe", "Cable TV", "Family Room", "Shower", "Breakfast", "Soundproof", "Dryer",
 ];

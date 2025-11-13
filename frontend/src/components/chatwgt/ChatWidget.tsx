@@ -3,7 +3,7 @@ import { FaComments, FaWhatsapp } from "react-icons/fa";
 import { motion, AnimatePresence } from "framer-motion";
 import { FiX } from "react-icons/fi";
 const url = import.meta.env.VITE_CHATBOT_URL;
-const WHATSAPP_NUMBER = "+254113368527";
+const WHATSAPP_NUMBER = "+255764338937";
 import { useTranslation } from "react-i18next";
 
 interface Message {
