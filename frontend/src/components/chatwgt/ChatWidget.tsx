@@ -10,6 +10,7 @@ interface Message {
     text: string;
     intent?: string;
 }
+const WHATSAPPNUMBER = "+255712639813";
 
 const ChatWidget = () => {
     const { t } = useTranslation();
@@ -144,7 +145,7 @@ const ChatWidget = () => {
                         {shouldShowWhatsApp() && (
                             <div className="p-4 border-t border-gray-200">
                                 <a
-                                    href={`https://wa.me/${"+255712639813".replace(/\D/g, "")}`}
+                                    href={`https://wa.me/${WHATSAPPNUMBER.replace(/\D/g, "")}`}
                                     target="_blank"
                                     rel="noopener noreferrer"
                                     className="btn btn-success btn-block gap-2"
