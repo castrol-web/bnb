@@ -52,7 +52,7 @@ function Navbar() {
         <div className="text-2xl font-bold text-primary">
           <NavLink to="/">
             <img
-              alt="Hotel Logo"
+              alt="HOTEL LOGO"
               src={hotellogo}
               className="rounded-full h-12 w-12"
             />
