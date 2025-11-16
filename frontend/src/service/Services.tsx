@@ -1,6 +1,6 @@
 import ServiceCard from "./ServiceCard";
 import { motion } from "framer-motion";
-import { FaUtensils, FaShuttleVan, FaWifi, FaCoffee, FaBicycle, FaConciergeBell } from "react-icons/fa";
+import { FaUtensils, FaShuttleVan, FaWifi, FaCoffee,FaConciergeBell } from "react-icons/fa";
 import { useTranslation } from "react-i18next";
 
 const services = (t: (key: string) => string) => [
