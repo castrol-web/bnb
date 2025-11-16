@@ -14,15 +14,15 @@ function MainHeader() {
 
   const content = [
     {
-      heading: "Welcome to B&B HOTEL Moshi",
+      heading: "Welcome to B&B HOTEL MOSHI",
       text: [
-        "Discover the stunning beauty of Moshi from the comfortable and inviting B&B HOTEL Moshi.",
+        "Discover the stunning beauty of Moshi from the comfortable and inviting B&B HOTEL MOSHI.",
         "Located just 45 minutes from Kilimanjaro International Airport, our hotel provides the perfect base for tourists looking to explore the wonders of Tanzania.",
       ],
     },
     {
       heading: "Our Rooms",
-      text: ["At B&B HOTEL Moshi, we offer a variety of accommodations to meet all your needs:"],
+      text: ["At B&B HOTEL MOSHI, we offer a variety of accommodations to meet all your needs:"],
       list: [
         "Single Rooms: Perfect for solo travelers seeking comfort and privacy.",
         "Double Rooms: Ideal for couples wanting to unwind after a day full of adventure.",
@@ -32,7 +32,7 @@ function MainHeader() {
     },
     {
       heading: "Amenities",
-      text: ["At B&B HOTEL Moshi, we are committed to providing a worry-free experience for our guests. Our hotel features:"],
+      text: ["At B&B HOTEL MOSHI, we are committed to providing a worry-free experience for our guests. Our hotel features:"],
       list: [
         "CCTV security: Ensuring your safety and peace of mind.",
         "Free parking: Convenient and hassle-free parking for all our guests.",
@@ -44,7 +44,6 @@ function MainHeader() {
       text: ["Moshi is a vibrant city full of life and culture. Visitors can enjoy numerous activities, including:"],
       list: [
         "Climbing Mount Kilimanjaro: The majestic mountain is a must-see for adventurous travelers.",
-        "Safaris in Amboseli National Park: Discover wildlife in their natural habitat with breathtaking views.",
         "Cultural Tours: Learn more about the local community and their traditions.",
         "Markets and Craft Shops: Explore local markets and purchase unique souvenirs and handicrafts.",
       ],

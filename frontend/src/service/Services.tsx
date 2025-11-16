@@ -24,15 +24,15 @@ const services = (t: (key: string) => string) => [
         Icon: FaCoffee,
         details: t("Relax with our premium coffee selections in a cozy lounge setting."),
     },
-    {
-        heading: t("Bike Rentals"),
-        Icon: FaBicycle,
-        details: t("Explore the city with our convenient bicycle rental service."),
-    },
+    // {
+    //     heading: t("Bike Rentals"),
+    //     Icon: FaBicycle,
+    //     details: t("Explore the city with our convenient bicycle rental service."),
+    // },
     {
         heading: t("24/7 Concierge"),
         Icon: FaConciergeBell,
-        details: t("Our staff is available around the clock to assist with bookings, tours, and special requests."),
+        details: t("Our staff is available around the clock to assist with bookings."),
     },
 ];
 
