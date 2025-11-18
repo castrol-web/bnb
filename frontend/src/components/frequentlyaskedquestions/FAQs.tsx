@@ -36,12 +36,7 @@ const FAQs = () => {
       id: 6,
       question: "Can I cancel or modify my reservation?",
       answer: "Yes, we offer flexible booking! You can modify or cancel your reservation up to 24 hours before your check-in date without any charges.",
-    },
-    {
-      id: 7,
-      question: "Do you offer tours or local experiences?",
-      answer: "We do! From guided nature walks to cultural village tours, we'll help you explore the best of our surroundings. Just ask our front desk or concierge.",
-    },
+    }
   ];
 
   return (
