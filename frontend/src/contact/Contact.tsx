@@ -53,7 +53,7 @@ const Contact = () => {
     {
       Icon: FaEnvelope,
       title: "contact.email",
-      detail: "Bnabhotel@gmail.com",
+      detail: "bnabhotel@gmail.com",
     },
     {
       Icon: FaMapMarkerAlt,
