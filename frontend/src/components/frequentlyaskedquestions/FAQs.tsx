@@ -24,7 +24,7 @@ const FAQs = () => {
     },
     {
       id: 4,
-      question: "Are pets allowed at the property?",
+      question: "Are pets allowed at the hotel?",
       answer:"We love furry companions! Pets are welcome in select rooms. Please inform us during booking so we can prepare a comfortable space for both of you.",
     },
     {
