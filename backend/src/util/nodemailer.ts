@@ -3,25 +3,24 @@ import dotenv from "dotenv";
 dotenv.config();
 
 //credentials 
-const port = Number(process.env.EMAIL_PORT);
-const host = process.env.HOST;
+// const port = Number(process.env.EMAIL_PORT);
+// const host = process.env.HOST;
 const user = process.env.USER;
-const pass = process.env.PASS;
-const secure = Boolean(process.env.SECURE);
-
-
-
+// const pass = process.env.PASS;
+// const secure = Boolean(process.env.SECURE);
 
 export const transport = nodemailer.createTransport({
-  host,
-  service: "gmail",
-  secure,
-  port,
-  auth: {
-    user,
-    pass
-  }
+  // tell nodemailer & typescript we're using SMTP transport
+  // so host, port, secure become valid
+  // (typing fix)
+  ...(<nodemailer.TransportOptions>{
+    host: "localhost",
+    port: 25,
+    secure: false,
+    auth: undefined,
+  })
 });
+
 
 export const getMailOptions = (userEmail: string, userName: string, token: string) => {
   const confirmationUrl = `${process.env.CLIENT_URL}/verify-email?token=${token}`;
@@ -38,7 +37,7 @@ export const getMailOptions = (userEmail: string, userName: string, token: strin
     <p>This link will expire in 24 hours. If you didn't register, you can ignore this message.</p>
 
     <hr />
-    <p>Need help? <a href="mailto:support@helenusagency.com" style="color:#1D4ED8;">Email us</a> or <a href="https://wa.me/255712345678" style="color:#1D4ED8;">WhatsApp us</a>.</p>
+    <p>Need help? <a href="mailto:bnbhotelstanzania.com" style="color:#1D4ED8;">Email us</a> or <a href="https://wa.me/255712345678" style="color:#1D4ED8;">WhatsApp us</a>.</p>
   </div>
     `,
   };
