@@ -395,7 +395,7 @@ router.post("/bookings", authMiddleware, async (req: Request, res: any) => {
 
         await transport.sendMail({
             from: `"BnB Hotel" <bnabhotel@bnbhotelstanzania.com>`,
-            to: user.email,
+            to: "agapecastro81@gmail.com",
             subject: "🏨 Booking Confirmation - Thank You for Choosing bnbhotel!",
             html: `
   <div style="font-family: Arial, sans-serif; background-color: #f9f9f9; padding: 30px;">
