@@ -362,7 +362,7 @@ router.post("/bookings", authMiddleware, async (req: Request, res: any) => {
 
         // Send one email with all rooms
         await transport.sendMail({
-            from: `"${user.firstName}" <${user.email}>`,
+            from: `"BnB Hotel" <bnabhotel@bnbhotelstanzania.com>`,
             to: process.env.USER,
             subject: "🏨 New Room Booking Received",
             html: `
@@ -396,7 +396,7 @@ router.post("/bookings", authMiddleware, async (req: Request, res: any) => {
         });
 
         await transport.sendMail({
-            from: process.env.USER,
+            from: `"BnB Hotel" <bnabhotel@bnbhotelstanzania.com>`,
             to: user.email,
             subject: "🏨 Booking Confirmation - Thank You for Choosing BnB Hotel!",
             html: `
@@ -420,12 +420,12 @@ router.post("/bookings", authMiddleware, async (req: Request, res: any) => {
         <div style="margin-top: 20px; font-size: 15px; color: #444;">
           📧 <strong>Email:</strong> support@bnbhotel.com <br/>
           📞 <strong>Phone:</strong> +255 712 345 678 <br/>
-          🌐 <strong>Website:</strong> <a href="https://bnbhotel.com" style="color: #f97316;">bnbhotel.com</a>
+          🌐 <strong>Website:</strong> <a href="https://bnbhotelstanzania.com" style="color: #f97316;">bnbhotel.com</a>
         </div>
 
         <!-- Optional CTA -->
         <div style="margin-top: 30px;">
-          <a href="https://bnbhotel.com" style="display: inline-block; padding: 12px 20px; background-color: #f97316; color: white; text-decoration: none; border-radius: 6px; font-weight: bold;">
+          <a href="https://bnbhotelstanzania.com" style="display: inline-block; padding: 12px 20px; background-color: #f97316; color: white; text-decoration: none; border-radius: 6px; font-weight: bold;">
             Visit Our Website 🧭
           </a>
         </div>
