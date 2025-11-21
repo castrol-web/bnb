@@ -361,7 +361,7 @@ router.post("/bookings", authMiddleware, async (req: Request, res: any) => {
         // Send one email with all rooms
         await transport.sendMail({
             from: `"BnB Hotel" <bnabhotel@bnbhotelstanzania.com>`,
-            to: "castrolmkude@gmail.com", // Booking notification email
+            to: `castrolmkude@gmail.com`, // Booking notification email
             subject: "🏨 New Room Booking Received",
             html: `
         <div style="font-family: Arial, sans-serif; padding: 20px;">
@@ -395,7 +395,7 @@ router.post("/bookings", authMiddleware, async (req: Request, res: any) => {
 
         await transport.sendMail({
             from: `"BnB Hotel" <bnabhotel@bnbhotelstanzania.com>`,
-            to: "agapecastro81@gmail.com",
+            to: `agapecastro81@gmail.com`,
             subject: "🏨 Booking Confirmation - Thank You for Choosing bnbhotel!",
             html: `
   <div style="font-family: Arial, sans-serif; background-color: #f9f9f9; padding: 30px;">
