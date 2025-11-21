@@ -4,10 +4,12 @@ dotenv.config();
 
 // Use Postfix on VPS
 export const transport = nodemailer.createTransport({
-    // Specify the transport type as 'sendmail'
-    sendmail: true,
-    newline: "unix",
-    path: "/usr/sbin/sendmail",
+   host: "127.0.0.1",  // local postfix
+    port: 587,           // postfix listens here
+    secure: false,      // STARTTLS handled by postfix to TransIP
+    tls: {
+        rejectUnauthorized: false,
+    },
     logger: true,
     debug: true
   }as any);
