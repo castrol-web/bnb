@@ -22,6 +22,8 @@ const router = express.Router();
 
 //s3 credentials
 const accessKey = process.env.AWS_ACCESS_KEY_ID;
+const userEmail = process.env.USER;
+console.log("User email for contact form:", userEmail);
 const secretAccessKey = process.env.AWS_SECRET_ACCESS_KEY;
 const region = process.env.AWS_REGION;
 const bucketName = process.env.AWS_BUCKET_NAME;
@@ -337,9 +339,7 @@ router.post("/bookings", authMiddleware, async (req: Request, res: any) => {
 
         const roomHtmlRows: string[] = [];
         for (let i = 0; i < rooms.length; i++) {
-            console.log()
             const roomData = rooms[i];
-            console.log(roomData)
             const roomDoc = await Room.findById(roomData.room);
             if (!roomDoc) {
                 return res.status(404).json({ message: `Room with ID ${roomData.room} not found` });
