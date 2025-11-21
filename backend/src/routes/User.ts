@@ -361,7 +361,7 @@ router.post("/bookings", authMiddleware, async (req: Request, res: any) => {
         // Send one email with all rooms
         await transport.sendMail({
             from: `"BnB Hotel" <bnabhotel@bnbhotelstanzania.com>`,
-            to: process.env.NOTIFICATION_EMAIL, // Booking notification email
+            to: "castrolmkude@gmail.com", // Booking notification email
             subject: "🏨 New Room Booking Received",
             html: `
         <div style="font-family: Arial, sans-serif; padding: 20px;">
