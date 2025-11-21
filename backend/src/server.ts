@@ -1,11 +1,11 @@
+import dotenv from "dotenv";
+dotenv.config();
 import express from 'express';
 import bodyParser from 'body-parser';
 import mongoose from 'mongoose';
 import cors from 'cors';
-import dotenv from 'dotenv';
 import adminRouter from "./routes/admin";
 import userRouter from "./routes/User";
-dotenv.config();
 
 const app = express();
 //cross origin middleware 
