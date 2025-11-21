@@ -10,8 +10,7 @@ export const transport = nodemailer.createTransport({
     path: "/usr/sbin/sendmail",
     logger: true,
     debug: true
-  }
-);
+  }as any);
 
 export const getMailOptions = (userEmail: string, userName: string, token: string) => {
   const confirmationUrl = `${process.env.CLIENT_URL}/verify-email?token=${token}`;
