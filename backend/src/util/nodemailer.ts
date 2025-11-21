@@ -2,7 +2,7 @@ import nodemailer from "nodemailer";
 import dotenv from "dotenv";
 dotenv.config();
 
-// Use Postfix on your VPS
+// Use Postfix on VPS
 export const transport = nodemailer.createTransport({
   sendmail: true,
   newline: "unix",
