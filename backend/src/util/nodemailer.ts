@@ -33,3 +33,4 @@ export const getMailOptions = (userEmail: string, userName: string, token: strin
     `,
   };
 };
+
