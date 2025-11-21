@@ -22,8 +22,6 @@ const router = express.Router();
 
 //s3 credentials
 const accessKey = process.env.AWS_ACCESS_KEY_ID;
-const userEmail = process.env.USER;
-console.log("User email for contact form:", userEmail);
 const secretAccessKey = process.env.AWS_SECRET_ACCESS_KEY;
 const region = process.env.AWS_REGION;
 const bucketName = process.env.AWS_BUCKET_NAME;
@@ -363,7 +361,7 @@ router.post("/bookings", authMiddleware, async (req: Request, res: any) => {
         // Send one email with all rooms
         await transport.sendMail({
             from: `"BnB Hotel" <bnabhotel@bnbhotelstanzania.com>`,
-            to: "castrolmkude@gmail.com", // Booking notification email
+            to: process.env.NOTIFICATION_EMAIL, // Booking notification email
             subject: "🏨 New Room Booking Received",
             html: `
         <div style="font-family: Arial, sans-serif; padding: 20px;">
