@@ -1,3 +1,5 @@
+import dotenv from "dotenv";
+dotenv.config();
 import express from "express";
 import { Request, Response } from "express";
 import jwt, { JwtPayload } from "jsonwebtoken";
@@ -7,7 +9,6 @@ import multer from "multer";
 import { S3Client, PutObjectCommand, GetObjectCommand } from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import User from "../models/User";
-import dotenv from "dotenv";
 import Token from "../models/Token";
 import { sendConfirmationMail } from "../util/SendMail";
 import authMiddleware from "../middleware/auth.middleware";
@@ -17,7 +18,6 @@ import Room from "../models/Room";
 import Review from "../models/Review";
 import Booking from "../models/Booking";
 import Gallery from "../models/Gallery";
-dotenv.config()
 const router = express.Router();
 
 //s3 credentials
