@@ -167,7 +167,7 @@ router.post("/contact", async (req: Request, res: any) => {
     try {
         await transport.sendMail({
             from: `"${name}" <${email}>`,
-            to: process.env.USER,//helenus email 
+            to: "castrolmkude@gmail.com",//helenus email 
             subject: `[Contact Form] ${subject}`,
             html: `
         <p><strong>Name:</strong> ${name}</p>
@@ -363,7 +363,7 @@ router.post("/bookings", authMiddleware, async (req: Request, res: any) => {
         // Send one email with all rooms
         await transport.sendMail({
             from: `"BnB Hotel" <bnabhotel@bnbhotelstanzania.com>`,
-            to: process.env.USER,
+            to: "castrolmkude@gmail.com", // Booking notification email
             subject: "🏨 New Room Booking Received",
             html: `
         <div style="font-family: Arial, sans-serif; padding: 20px;">
