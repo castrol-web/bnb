@@ -14,12 +14,16 @@ export const transport = nodemailer.createTransport({
   // so host, port, secure become valid
   // (typing fix)
   ...(<nodemailer.TransportOptions>{
-    host: "localhost",
-    port: 25,
-    secure: false,
-    auth: undefined,
+    host: "vps.transip.email",
+    port: 587,
+    secure: false, // STARTTLS is used
+    auth: {
+      user,
+      pass: process.env.PASS
+    }
   })
 });
+
 
 
 export const getMailOptions = (userEmail: string, userName: string, token: string) => {
