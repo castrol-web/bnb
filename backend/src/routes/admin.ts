@@ -1,5 +1,7 @@
 import express from "express";
 import { Request } from 'express';
+import dotenv from "dotenv";
+dotenv.config();
 import { S3Client, PutObjectCommand, GetObjectCommand, DeleteObjectsCommand } from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import multer from "multer";
@@ -7,11 +9,10 @@ import crypto from "crypto";
 import User from "../models/User";
 import Room from "../models/Room"
 import bcrypt from "bcryptjs";
-import dotenv from "dotenv";
+
 import Review from "../models/Review";
 import authMiddleware from "../middleware/auth.middleware";
 import Gallery from "../models/Gallery";
-dotenv.config();
 const router = express.Router();
 
 const adminPassword = process.env.ADMIN_PASSWORD;
