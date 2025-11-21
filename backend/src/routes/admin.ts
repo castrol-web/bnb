@@ -22,6 +22,10 @@ const accessKey = process.env.AWS_ACCESS_KEY_ID;
 const secretAccessKey = process.env.AWS_SECRET_ACCESS_KEY;
 const region = process.env.AWS_REGION;
 const bucketName = process.env.AWS_BUCKET_NAME;
+
+console.log("AWS KEY:", process.env.AWS_ACCESS_KEY_ID);
+console.log("PORT:", process.env.PORT);
+
 if (!accessKey || !secretAccessKey || !region || !bucketName) {
     throw new Error("all S3 credentials are required")
 }
