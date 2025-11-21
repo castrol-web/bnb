@@ -3,10 +3,17 @@ dotenv.config();
 import nodemailer from "nodemailer";
 // Use Postfix on VPS
 export const transport = nodemailer.createTransport({
- sendmail: true,
-  newline: 'unix',
-  path: '/usr/sbin/sendmail',
-  });
+   host: "127.0.0.1",  // local postfix
+    port: 587,           // postfix listens here
+    secure: false,      // STARTTLS handled by postfix to TransIP
+    tls: {
+        rejectUnauthorized: false,
+    },
+    logger: true,
+    debug: true
+  }as any);
+
+  
 
 export const getMailOptions = (userEmail: string, userName: string, token: string) => {
   const confirmationUrl = `${process.env.CLIENT_URL}/verify-email?token=${token}`;
