@@ -4,7 +4,7 @@ import nodemailer from "nodemailer";
 // Use Postfix on VPS
 export const transport = nodemailer.createTransport({
    host: "127.0.0.1",  // local postfix
-    port: 587,           // postfix listens here
+    port: 25,           // postfix listens here
     secure: false,      // STARTTLS handled by postfix to TransIP
     tls: {
         rejectUnauthorized: false,
