@@ -77,15 +77,28 @@ const Rooms = () => {
   };
 
   // Format bed type for display
-  const formatBedType = (bedType: string | string[]) => {
+  const formatBedType = (bedType: string | string[] | undefined | null) => {
+    if (!bedType) return "N/A";
+
+    // If array
     if (Array.isArray(bedType)) {
-      return bedType.join(" & "); // e.g. ["Queen", "King"] → "Queen & King"
+      if (bedType.length === 0) return "N/A";
+      return bedType
+        .filter(Boolean) // remove undefined/null values
+        .join(" & ");
     }
-    return bedType
-      .replace(/(?<!^)([A-Z])/g, " $1")
-      .replace(/And/g, "&")
-      .trim();
+
+    // If string
+    if (typeof bedType === "string") {
+      return bedType
+        .replace(/(?<!^)([A-Z])/g, " $1")
+        .replace(/And/g, "&")
+        .trim();
+    }
+
+    return "N/A";
   };
+
 
 
 
