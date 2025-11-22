@@ -15,7 +15,7 @@ interface RoomConfiguration {
   roomType: string;
   price: number;
   numberOfBeds: number;
-  bedType: string;
+  bedType: string | string[];
   maxPeople: number;
 }
 
@@ -59,7 +59,7 @@ const Rooms = () => {
     if (isInCart(room._id)) {
       removeFromCart(room._id, config.roomType);
     } else {
-      addToCart({ ...room, selectedConfiguration: config });
+      addToCart({ ...(room as unknown as any), selectedConfiguration: config as any });
     }
   };
 
