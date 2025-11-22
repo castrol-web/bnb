@@ -135,31 +135,55 @@ router.post('/create-room', upload.fields([{ name: 'pictures', maxCount: 10 }, {
     }
 });
 
+router.put('/room/:id', upload.fields([{ name: 'pictures', maxCount: 10 }, { name: 'frontViewPicture', maxCount: 1 }]),
+    async (req: Request, res: any) => {
+        try {
+            const room = await Room.findById(req.params.id);
+            if (!room) return res.status(404).json({ message: 'Room not found' });
 
-router.put('/room/:id', upload.fields([{ name: 'pictures', maxCount: 10 }, { name: 'frontViewPicture', maxCount: 1 }]), async (req: Request, res: any) => {
-    try {
-        const room = await Room.findById(req.params.id);
-        if (!room) return res.status(404).json({ message: 'Room not found' });
+            const { title, roomNumber, description, status, amenities, configurations, imagesToKeep = '[]', keepFrontView } = req.body;
 
-        const { title, roomNumber, description, status, amenities, configurations, imagesToKeep = '[]', keepFrontView, } = req.body;
+            const parsedAmenities: string[] = JSON.parse(amenities || '[]');
+            let parsedConfigurations: any[] = JSON.parse(configurations || '[]');
+            const parsedKeepImages: string[] = JSON.parse(imagesToKeep || '[]');
 
-        const parsedAmenities = JSON.parse(amenities);
-        const parsedConfigurations = JSON.parse(configurations);
-        const parsedKeepImages: string[] = JSON.parse(imagesToKeep || '[]');
+            if (!title || !roomNumber || !description || parsedConfigurations.length === 0) {
+                return res.status(400).json({ message: 'All fields are required including at least one configuration.' });
+            }
 
-        if (!title || !roomNumber || !description || parsedConfigurations.length === 0) {
-            return res.status(400).json({ message: 'All fields are required including at least one configuration.' });
-        }
+            // ✅ Ensure each configuration's bedType is an array
+            parsedConfigurations = parsedConfigurations.map(cfg => ({
+                ...cfg,
+                bedType: Array.isArray(cfg.bedType) ? cfg.bedType : [],
+                price: Number(cfg.price) || 0,
+                numberOfBeds: Number(cfg.numberOfBeds) || 1,
+                maxPeople: Number(cfg.maxPeople) || 1,
+                roomType: cfg.roomType || ''
+            }));
 
-        const files = req.files as { [key: string]: Express.Multer.File[] };
+            const files = req.files as { [key: string]: Express.Multer.File[] };
 
-        const picturesToDelete = room.pictures.filter(img => !parsedKeepImages.includes(img));
-        const shouldDeleteFront = keepFrontView !== 'true' && room.frontViewPicture;
+            const picturesToDelete = room.pictures.filter(img => !parsedKeepImages.includes(img));
+            const shouldDeleteFront = keepFrontView !== 'true' && room.frontViewPicture;
 
-        const newPictures: string[] = [];
+            const newPictures: string[] = [];
 
-        if (files?.pictures?.length) {
-            for (const file of files.pictures) {
+            if (files?.pictures?.length) {
+                for (const file of files.pictures) {
+                    const key = randomImageName();
+                    await s3.send(new PutObjectCommand({
+                        Bucket: bucketName,
+                        Key: key,
+                        Body: file.buffer,
+                        ContentType: file.mimetype,
+                    }));
+                    newPictures.push(key);
+                }
+            }
+
+            let newFront = room.frontViewPicture;
+            if (files.frontViewPicture?.[0]) {
+                const file = files.frontViewPicture[0];
                 const key = randomImageName();
                 await s3.send(new PutObjectCommand({
                     Bucket: bucketName,
@@ -167,59 +191,48 @@ router.put('/room/:id', upload.fields([{ name: 'pictures', maxCount: 10 }, { nam
                     Body: file.buffer,
                     ContentType: file.mimetype,
                 }));
-                newPictures.push(key);
+                newFront = key;
+            } else if (!keepFrontView && !files.frontViewPicture?.[0]) {
+                return res.status(400).json({ message: 'Front view image is required.' });
             }
+
+            const finalPictures = [...parsedKeepImages, ...newPictures];
+
+            if (finalPictures.length === 0) {
+                return res.status(400).json({ message: 'At least one slideshow image is required.' });
+            }
+
+            // Delete removed images from S3
+            const deleteKeys = [...picturesToDelete];
+            if (shouldDeleteFront && room.frontViewPicture) deleteKeys.push(room.frontViewPicture);
+            if (deleteKeys.length) {
+                await s3.send(new DeleteObjectsCommand({
+                    Bucket: bucketName,
+                    Delete: { Objects: deleteKeys.map(Key => ({ Key })) }
+                }));
+            }
+
+            // Save updated room
+            room.title = title;
+            room.roomNumber = roomNumber;
+            room.description = description;
+            room.status = status;
+            room.amenities = parsedAmenities;
+            // cast to any to satisfy Mongoose DocumentArray typing
+            room.configurations = parsedConfigurations as any;
+            room.pictures = finalPictures;
+            room.frontViewPicture = newFront;
+
+            await room.save();
+
+            res.status(200).json({ message: 'Room updated successfully' });
+        } catch (error) {
+            console.error(error);
+            res.status(500).json({ message: 'Failed to update room', error });
         }
-
-        let newFront = room.frontViewPicture;
-        if (files.frontViewPicture?.[0]) {
-            const file = files.frontViewPicture[0];
-            const key = randomImageName();
-            await s3.send(new PutObjectCommand({
-                Bucket: bucketName,
-                Key: key,
-                Body: file.buffer,
-                ContentType: file.mimetype,
-            }));
-            newFront = key;
-        } else if (!keepFrontView && !files.frontViewPicture?.[0]) {
-            return res.status(400).json({ message: 'Front view image is required.' });
-        }
-
-        const finalPictures = [...parsedKeepImages, ...newPictures];
-
-        if (finalPictures.length === 0) {
-            return res.status(400).json({ message: 'At least one slideshow image is required.' });
-        }
-
-        // Delete removed images
-        const deleteKeys = [...picturesToDelete];
-        if (shouldDeleteFront) deleteKeys.push(room.frontViewPicture);
-        if (deleteKeys.length) {
-            await s3.send(new DeleteObjectsCommand({
-                Bucket: bucketName,
-                Delete: { Objects: deleteKeys.map(Key => ({ Key })) }
-            }));
-        }
-
-        //Save updated fields
-        room.title = title;
-        room.roomNumber = roomNumber;
-        room.description = description;
-        room.status = status;
-        room.amenities = parsedAmenities;
-        room.configurations = parsedConfigurations;
-        room.pictures = finalPictures;
-        room.frontViewPicture = newFront;
-
-        await room.save();
-
-        res.status(200).json({ message: 'Room updated successfully' });
-    } catch (error) {
-        console.error(error);
-        res.status(500).json({ message: 'Failed to update room', error });
     }
-});
+);
+
 
 
 
