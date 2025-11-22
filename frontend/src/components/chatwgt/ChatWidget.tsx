@@ -10,7 +10,7 @@ interface Message {
     text: string;
     intent?: string;
 }
-const WHATSAPPNUMBER = "+255712639813";
+const WHATSAPPNUMBER = "+255764338937";
 
 const ChatWidget = () => {
     const { t } = useTranslation();

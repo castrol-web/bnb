@@ -45,7 +45,7 @@ const AmenityChoices = [
     "Room 22m²", "safe box", "Room 26m²", "Room 19m²", "Toothbrush", "Shampoo", "Slippers",
     "Room 16m²", "Room 24m²", "Room 28m²", "Double Beds", "Single Bed", "Tripple", "Smart TV",
     "Sauna", "Room Service", "Bath tab", "AC", "Booking", "Storage", "Outdoor Kitchen", "Towels",
-    "Big Wardrobe", "Cable TV", "Family Room", "Shower", "Breakfast", "Soundproof", "Dryer",
+    "Big Wardrobe", "Cable TV", "Family Room", "Shower", "Breakfast", "Soundproof", "Dryer","sitting room"
 ];
 
 const RoomManager: React.FC = () => {

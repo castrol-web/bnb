@@ -25,7 +25,7 @@ def get_response(user_input):
 
     # 1. Forward to agent if low confidence or explicitly asking
     if confidence < 0.6 or predicted_tag == "contact_agent":
-        return "I'm forwarding you to our real agent on WhatsApp: https://wa.me/+255712639813"
+        return "I'm forwarding you to our real agent on WhatsApp: https://wa.me/+255764338937"
 
     # 2. Return response for matched tag
     for intent in intents['intents']:
