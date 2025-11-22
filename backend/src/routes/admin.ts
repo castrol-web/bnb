@@ -68,72 +68,101 @@ sudoAdmin();
 const storage = multer.memoryStorage();
 const upload = multer({ storage });
 const randomImageName = (bytes = 32) => crypto.randomBytes(bytes).toString("hex");
-
-// CREATE a room
-router.post('/create-room', upload.fields([{ name: 'pictures', maxCount: 10 }, { name: 'frontViewPicture', maxCount: 1 }]), async (req: Request, res: any) => {
+router.post('/create-room',upload.fields([  { name: 'pictures', maxCount: 10 },  { name: 'frontViewPicture', maxCount: 1 }]),
+  async (req: express.Request, res: express.Response): Promise<void> => {
     try {
-        const { title, roomNumber, description, status, amenities, configurations } = req.body;
+      const { title, roomNumber, description, status, amenities, configurations } = req.body;
 
-        if (!title || !roomNumber || !description || !Array.isArray(JSON.parse(configurations)) || JSON.parse(configurations).length === 0) {
-            return res.status(400).json({ message: "All fields are required including at least one configuration." });
+      // Parse and sanitize configurations
+      const parsedConfigurations = (() => {
+        try {
+          const cfg = JSON.parse(configurations);
+          if (!Array.isArray(cfg)) throw new Error();
+          return cfg.map(c => ({
+            roomType: String(c.roomType || ''),
+            price: Number(c.price || 0),
+            numberOfBeds: Number(c.numberOfBeds || 1),
+            bedType: Array.isArray(c.bedType) ? c.bedType.map(String) : [],
+            maxPeople: Number(c.maxPeople || 1)
+          }));
+        } catch {
+          return [];
         }
+      })();
 
-        const parsedAmenities = JSON.parse(amenities);
-        const parsedConfigurations = JSON.parse(configurations);
-
-
-        const files = req.files as { [fieldname: string]: Express.Multer.File[] };
-        const pictureFiles = files['pictures'] || [];
-        const frontPicFile = files['frontViewPicture']?.[0];
-
-        if (!frontPicFile || pictureFiles.length === 0) {
-            return res.status(400).json({ message: 'Missing images' });
-        }
-
-        const pictureNames = pictureFiles.map(() => randomImageName());
-        const frontPictureName = randomImageName();
-
-        // Save room in DB first with image keys only
-        const newRoom = new Room({
-            title,
-            roomNumber,
-            description,
-            configurations: parsedConfigurations,
-            amenities: parsedAmenities,
-            status,
-            pictures: pictureNames,
-            frontViewPicture: frontPictureName
+      if (!title || !roomNumber || !description || parsedConfigurations.length === 0) {
+        res.status(400).json({
+          message: "All fields are required including at least one valid configuration."
         });
+        return;
+      }
 
-        await newRoom.save();
+      // Parse and sanitize amenities
+      let parsedAmenities: string[] = [];
+      try {
+        parsedAmenities = JSON.parse(amenities) || [];
+        if (!Array.isArray(parsedAmenities)) parsedAmenities = [];
+      } catch {
+        parsedAmenities = [];
+      }
 
-        // Upload all slideshow images concurrently
-        await Promise.all(
-            pictureFiles.map((file, i) =>
-                s3.send(new PutObjectCommand({
-                    Bucket: bucketName,
-                    Key: pictureNames[i],
-                    Body: file.buffer,
-                    ContentType: file.mimetype
-                }))
-            )
-        );
+      const files = req.files as { [fieldname: string]: Express.Multer.File[] };
+      const pictureFiles = files['pictures'] || [];
+      const frontPicFile = files['frontViewPicture']?.[0];
 
-        // Upload front view image
-        await s3.send(new PutObjectCommand({
+      if (!frontPicFile || pictureFiles.length === 0) {
+        res.status(400).json({ message: 'At least one slideshow image and a front view image are required.' });
+        return;
+      }
+
+      // Generate unique keys for images
+      const pictureNames = pictureFiles.map(() => randomImageName());
+      const frontPictureName = randomImageName();
+
+      // Save room first with image keys only
+      const newRoom = new Room({
+        title,
+        roomNumber,
+        description,
+        configurations: parsedConfigurations,
+        amenities: parsedAmenities,
+        status,
+        pictures: pictureNames,
+        frontViewPicture: frontPictureName
+      });
+
+      await newRoom.save();
+
+      // Upload all slideshow images concurrently
+      await Promise.all(
+        pictureFiles.map((file, i) =>
+          s3.send(new PutObjectCommand({
             Bucket: bucketName,
-            Key: frontPictureName,
-            Body: frontPicFile.buffer,
-            ContentType: frontPicFile.mimetype
-        }));
+            Key: pictureNames[i],
+            Body: file.buffer,
+            ContentType: file.mimetype
+          }))
+        )
+      );
 
-        res.status(201).json({ message: "Room created successfully" });
+      // Upload front view image
+      await s3.send(new PutObjectCommand({
+        Bucket: bucketName,
+        Key: frontPictureName,
+        Body: frontPicFile.buffer,
+        ContentType: frontPicFile.mimetype
+      }));
+
+      res.status(201).json({ message: "Room created successfully" });
+      return;
 
     } catch (error: any) {
-        console.error(error);
-        res.status(500).json({ message: "Failed to create the room!", error });
+      console.error(error);
+      res.status(500).json({ message: "Failed to create the room!", error });
+      return;
     }
-});
+  }
+);
 
 router.put('/room/:id', upload.fields([{ name: 'pictures', maxCount: 10 }, { name: 'frontViewPicture', maxCount: 1 }]),
     async (req: Request, res: any) => {
