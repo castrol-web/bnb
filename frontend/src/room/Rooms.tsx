@@ -76,6 +76,19 @@ const Rooms = () => {
     setSelectedConfigIndex((prev) => ({ ...prev, [roomId]: newIndex }));
   };
 
+  // Format bed type for display
+  const formatBedType = (bedType: string | string[]) => {
+    if (Array.isArray(bedType)) {
+      return bedType.join(" & "); // e.g. ["Queen", "King"] → "Queen & King"
+    }
+    return bedType
+      .replace(/(?<!^)([A-Z])/g, " $1")
+      .replace(/And/g, "&")
+      .trim();
+  };
+
+
+
   return (
     <div className="mt-28">
       <Header pageName={t("Our Rooms")} />
@@ -170,8 +183,9 @@ const Rooms = () => {
                   >
                     {room.configurations.map((config, i) => (
                       <option key={i} value={i} className="bg-black text-white">
-                        {`${config.roomType} - ${config.numberOfBeds} beds - ${config.bedType} - $${config.price}`}
+                        {`${config.roomType} - ${config.numberOfBeds} beds - ${formatBedType(config.bedType)} - $${config.price}`}
                       </option>
+
                     ))}
                   </select>
                 </div>
@@ -187,7 +201,7 @@ const Rooms = () => {
                   </p>
                   <p>{t("Deposit")}: <span className="text-gray-100">{t("Not required")}</span></p>
                   <p>{t("Beds")}: <span className="text-gray-100">{selectedConfig.numberOfBeds}</span></p>
-                  <p>{t("Bed Type")}: <span className="text-gray-100">{selectedConfig.bedType}{selectedConfig.roomType === "Family" ? <span className="text-sm ml-2">- 1 King for the parents and 2 queens for the children</span> : null}</span></p>
+                  <p>{t("Bed Type")}: <span className="text-gray-100">{formatBedType(selectedConfig.bedType)}{selectedConfig.roomType === "Family" ? <span className="text-sm ml-2">- 1 King for the parents and 2 queens for the children</span> : null}</span></p>
                 </div>
 
                 <Link

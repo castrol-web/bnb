@@ -13,7 +13,7 @@ interface RoomConfiguration {
     roomType: string;
     price: number;
     numberOfBeds: number;
-    bedType: string;
+    bedType: string[];
     maxPeople: number;
 }
 
@@ -39,7 +39,7 @@ const defaultValues = {
             roomType: '',
             price: 0,
             numberOfBeds: 1,
-            bedType: '',
+            bedType: [],
             maxPeople: 1
         }
     ],
@@ -50,7 +50,7 @@ const defaultValues = {
 };
 
 const AmenityChoices = [
-    "Room 20m²","Room 23m²","toiletries","Cooling fan","clothes rack","bedside table","Room 22m²","safe box", "Room 26m²","Room 19m²", "Toothbrush", "Shampoo", "Slippers", "Room 16m²", "Room 24m²", "Room 28m²", "Double Beds", "Single Bed", "Tripple", "Smart TV", "Sauna", "Room Service", "Bath tab",
+    "Room 20m²", "Room 23m²", "toiletries", "Cooling fan", "clothes rack", "bedside table", "Room 22m²", "safe box", "Room 26m²", "Room 19m²", "Toothbrush", "Shampoo", "Slippers", "Room 16m²", "Room 24m²", "Room 28m²", "Double Beds", "Single Bed", "Tripple", "Smart TV", "Sauna", "Room Service", "Bath tab",
     "AC", "Booking", "Storage", "Outdoor Kitchen", "Towels",
     "Big Wardrobe", "Cable TV", "Family Room", "Shower", "Breakfast", "Soundproof", "Dryer",
 ];
@@ -119,7 +119,7 @@ const RoomManager: React.FC = () => {
 
     //configurations
     const [configurations, setConfigurations] = useState<RoomConfiguration[]>([
-        { roomType: '', price: 0, numberOfBeds: 1, bedType: '', maxPeople: 1 }
+        { roomType: '', price: 0, numberOfBeds: 1, bedType: [], maxPeople: 1 }
     ]);
 
     const updateConfigField = <K extends keyof RoomConfiguration>(
@@ -138,7 +138,7 @@ const RoomManager: React.FC = () => {
             roomType: '',
             price: 0,
             numberOfBeds: 1,
-            bedType: '',
+            bedType: [],
             maxPeople: 1
         }]);
     };
@@ -421,16 +421,30 @@ const RoomManager: React.FC = () => {
                                                     </div>
                                                     <div>
                                                         <label className="label">{t("Bed type")}</label>
-                                                        <select className="select select-bordered w-full" value={config.bedType}
-                                                            onChange={(e) => updateConfigField(idx, 'bedType', e.target.value)}>
-                                                            <option value="">{t("Choose bed type")}</option>
-                                                            <option value="Single">{t("Single")}</option>
-                                                            <option value="Queen">{t("Queen")}</option>
-                                                            <option value="Double">{t("Double")}</option>
-                                                            <option value="King">{t("King")}</option>
-                                                            <option value="Bunk">{t("Bunk")}</option>
-                                                        </select>
+                                                        <div className="grid grid-cols-2 gap-2">
+
+                                                            {["Single", "Queen", "Double", "King", "Bunk"].map((bed) => (
+                                                                <label key={bed} className="flex items-center gap-2">
+                                                                    <input
+                                                                        type="checkbox"
+                                                                        className="checkbox"
+                                                                        checked={config.bedType.includes(bed)}
+                                                                        onChange={(e) => {
+                                                                            const checked = e.target.checked;
+                                                                            const updated = checked
+                                                                                ? [...config.bedType, bed]
+                                                                                : config.bedType.filter((b) => b !== bed);
+
+                                                                            updateConfigField(idx, "bedType", updated);
+                                                                        }}
+                                                                    />
+                                                                    {t(bed)}
+                                                                </label>
+                                                            ))}
+
+                                                        </div>
                                                     </div>
+
                                                     <div>
                                                         <label className="label">{t("Maximum people")}</label>
                                                         <input type="number" placeholder="Max People" className="input input-bordered w-full"
