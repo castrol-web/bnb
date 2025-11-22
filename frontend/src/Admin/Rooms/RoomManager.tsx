@@ -102,8 +102,27 @@ const RoomManager: React.FC = () => {
     };
     useEffect(() => {
         if (editingRoom) {
-            setConfigurations(editingRoom.configurations || defaultValues.configurations);
-            reset(editingRoom);
+            // Ensure configurations always have bedType array
+            const safeConfigurations = (editingRoom.configurations || defaultValues.configurations).map(cfg => ({
+                roomType: cfg.roomType || '',
+                price: cfg.price || 0,
+                numberOfBeds: cfg.numberOfBeds || 1,
+                bedType: cfg.bedType || [],
+                maxPeople: cfg.maxPeople || 1,
+            }));
+
+            setConfigurations(safeConfigurations);
+
+            // Reset form with safe defaults
+            reset({
+                ...editingRoom,
+                configurations: safeConfigurations,
+                amenities: editingRoom.amenities || [],
+                status: editingRoom.status || 'available',
+                frontViewPicture: editingRoom.frontViewPicture || '',
+                pictures: editingRoom.pictures || [],
+            });
+
             setExistingFrontImage(editingRoom.frontViewPicture || null);
             setExistingPictures(editingRoom.pictures || []);
             setSelectedAmenities(editingRoom.amenities || []);
@@ -117,6 +136,7 @@ const RoomManager: React.FC = () => {
     }, [editingRoom, reset]);
 
 
+
     //configurations
     const [configurations, setConfigurations] = useState<RoomConfiguration[]>([
         { roomType: '', price: 0, numberOfBeds: 1, bedType: [], maxPeople: 1 }
@@ -128,9 +148,18 @@ const RoomManager: React.FC = () => {
         value: RoomConfiguration[K]
     ) => {
         const updated = [...configurations];
-        updated[index][field] = value;
+
+        if (field === 'bedType') {
+            // TS now knows bedType is string[]
+            updated[index].bedType = value as string[];
+        } else {
+            updated[index][field] = value;
+        }
+
         setConfigurations(updated);
     };
+
+
 
 
     const addConfig = () => {
@@ -422,18 +451,17 @@ const RoomManager: React.FC = () => {
                                                     <div>
                                                         <label className="label">{t("Bed type")}</label>
                                                         <div className="grid grid-cols-2 gap-2">
-
                                                             {["Single", "Queen", "Double", "King", "Bunk"].map((bed) => (
                                                                 <label key={bed} className="flex items-center gap-2">
                                                                     <input
                                                                         type="checkbox"
                                                                         className="checkbox"
-                                                                        checked={config.bedType.includes(bed)}
+                                                                        checked={config.bedType?.includes(bed) || false}
                                                                         onChange={(e) => {
                                                                             const checked = e.target.checked;
                                                                             const updated = checked
-                                                                                ? [...config.bedType, bed]
-                                                                                : config.bedType.filter((b) => b !== bed);
+                                                                                ? [...(config.bedType || []), bed]
+                                                                                : (config.bedType || []).filter((b) => b !== bed);
 
                                                                             updateConfigField(idx, "bedType", updated);
                                                                         }}
@@ -441,6 +469,7 @@ const RoomManager: React.FC = () => {
                                                                     {t(bed)}
                                                                 </label>
                                                             ))}
+
 
                                                         </div>
                                                     </div>
