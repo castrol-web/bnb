@@ -47,17 +47,17 @@ const Contact = () => {
   const contactInfo = [
     {
       Icon: FaPhoneAlt,
-      title: "contact.phone",
-      detail: "+255113368527",
+      title: "phone",
+      detail: "+255764338937",
     },
     {
       Icon: FaEnvelope,
-      title: "contact.email",
+      title: "email",
       detail: "bnabhotel@gmail.com",
     },
     {
       Icon: FaMapMarkerAlt,
-      title: "contact.location",
+      title: "location",
       detail: "Moshi urban Tanzania",
     },
   ];
