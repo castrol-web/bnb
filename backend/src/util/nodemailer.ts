@@ -3,13 +3,16 @@ dotenv.config();
 import nodemailer from "nodemailer";
 // Use Postfix on VPS
 export const transport = nodemailer.createTransport({
-  host: "smtp.transip.email",
-  port: 465,
-  secure: true,
+  host: "vps.transip.email",
+  port: 587,
+  secure: false, // IMPORTANT for 587
   auth: {
-    user: process.env.EMAIL_USER,
-    pass: process.env.EMAIL_PASS,
+    user: "bnabhotel@vps.transip.email",
+    pass: "vps.transip.email:587bnabhotel@vps.transip.email"
   },
+  tls: {
+    rejectUnauthorized: false
+  }
 });
 
 
