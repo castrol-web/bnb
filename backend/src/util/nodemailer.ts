@@ -10,7 +10,7 @@ export const transport = nodemailer.createTransport({
     user: process.env.EMAIL_USER,
     pass: process.env.EMAIL_PASS,
   },
-} as any);
+});
 
 
 
