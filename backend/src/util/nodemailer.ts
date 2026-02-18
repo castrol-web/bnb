@@ -18,7 +18,7 @@ export const getMailOptions = (userEmail: string, userName: string, token: strin
   const confirmationUrl = `${process.env.CLIENT_URL}/verify-email?token=${token}`;
 
   return {
-    from: `"BnB Hotel" <bnabhotel@bnbhotelstanzania.com>`,
+    from: `"BnB Hotel" <info@bnbhotelstanzania.com>`,
     to: userEmail,
     subject: "Confirm Your Email Address",
     html: `

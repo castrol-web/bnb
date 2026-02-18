@@ -153,8 +153,7 @@ router.post('/login', async (req: Request<loginProps>, res: any) => {
     }
 });
 
-
-//contact us
+//contact form
 router.post("/contact", async (req: Request, res: any) => {
     const { name, email, subject, message } = req.body;
 
@@ -164,15 +163,16 @@ router.post("/contact", async (req: Request, res: any) => {
 
     try {
         await transport.sendMail({
-            from: `"${name}" <${email}>`,
-            to: "castrolmkude@gmail.com",//helenus email 
+            from: `"bnabhotel" <${process.env.EMAIL_USER}>`, // <-- your TransIP mailbox
+            to: "castrolmkude@gmail.com", // where you receive messages
             subject: `[Contact Form] ${subject}`,
             html: `
-        <p><strong>Name:</strong> ${name}</p>
-        <p><strong>Email:</strong> ${email}</p>
-        <p><strong>Message:</strong></p>
-        <p>${message}</p>
-      `,
+                <p><strong>Name:</strong> ${name}</p>
+                <p><strong>Email:</strong> ${email}</p>
+                <p><strong>Message:</strong></p>
+                <p>${message}</p>
+            `,
+            replyTo: email, // <-- client’s email, so reply goes to them
         });
 
         res.status(201).json({ message: "Message sent successfully!" });
@@ -181,6 +181,7 @@ router.post("/contact", async (req: Request, res: any) => {
         res.status(500).json({ message: "Failed to send message." });
     }
 });
+
 
 
 //verify email
