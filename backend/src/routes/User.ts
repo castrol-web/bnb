@@ -163,8 +163,8 @@ router.post("/contact", async (req: Request, res: any) => {
 
     try {
         await transport.sendMail({
-            from: `"bnabhotel" <agapecastro81@gmail.com>`, // <-- your TransIP mailbox
-            to: "castrolmkude@gmail.com", // where you receive messages
+            from: `"bnabhotel" <castrolmkude@gmail.com>`, // <-- your TransIP mailbox
+            to: "agapecastro81@gmail.com", // where you receive messages
             subject: `[Contact Form] ${subject}`,
             html: `
                 <p><strong>Name:</strong> ${name}</p>
