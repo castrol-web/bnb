@@ -1,6 +1,13 @@
 import dotenv from "dotenv";
 dotenv.config();
 import nodemailer from "nodemailer";
+
+console.log("SMTP Config:", {
+  host: process.env.BREVO_SMTP_HOST,
+  port: process.env.BREVO_SMTP_PORT,
+  user: process.env.BREVO_SMTP_USER,
+  pass: process.env.BREVO_SMTP_PASS, // Don't log the actual password
+});
 // Use Postfix on VPS
 export const transport = nodemailer.createTransport({
   host: process.env.BREVO_SMTP_HOST,
