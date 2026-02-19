@@ -32,7 +32,6 @@ const initialDataSet = {
 
 const Signup = () => {
   const { t } = useTranslation();
-
   const [loading, setLoading] = useState(false);
   const [signupData, setSignupData] = useState(initialDataSet);
   const [showPassword, setShowPassword] = useState(false);
@@ -61,11 +60,18 @@ const Signup = () => {
     event.preventDefault();
 
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{6,}$/;
+    const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d).{6,}$/; // Updated: allows special characters
     const phoneRegex = /^\+?\d{7,15}$/;
     const usernameRegex = /^[a-zA-Z0-9_]{3,}$/;
 
-    if (!signupData.userName || !signupData.email || !signupData.password || !signupData.phone || !signupData.password || !signupData.nationality) {
+    // Check required fields
+    if (
+      !signupData.userName ||
+      !signupData.email ||
+      !signupData.password ||
+      !signupData.phone ||
+      !signupData.nationality
+    ) {
       toast.warning(t("Please fill in all required fields."));
       return;
     }
@@ -87,13 +93,13 @@ const Signup = () => {
     if (!passwordRegex.test(signupData.password)) {
       toast.error(
         t(
-          "Password must be at least 6 characters and include at least 1 letter and 1 number."
+          "Password must be at least 6 characters and include at least 1 letter and 1 number. Special characters are allowed."
         )
       );
       return;
     }
 
-    if (signupData.phone && !phoneRegex.test(signupData.phone)) {
+    if (!phoneRegex.test(signupData.phone)) {
       toast.error(
         t("Phone number is invalid. Use international format e.g. +2547XXXXXXX.")
       );
@@ -102,9 +108,11 @@ const Signup = () => {
 
     try {
       setLoading(true);
-      const response = await axios.post(`${url}/api/user/register`, signupData, {
-        headers: { "Content-Type": "application/json" },
-      });
+      const response = await axios.post(
+        `${url}/api/user/register`,
+        signupData,
+        { headers: { "Content-Type": "application/json" } }
+      );
 
       if (response.status === 201) {
         toast.success(t("Registration successful! Check your email for verification."));
@@ -112,7 +120,6 @@ const Signup = () => {
       }
     } catch (error: any) {
       const msg = error?.response?.data?.message;
-
       if (error.response?.status === 400 && msg) {
         toast.error(t(msg));
       } else if (error.response?.status === 500) {
