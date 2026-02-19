@@ -161,11 +161,9 @@ router.post("/contact", async (req: Request, res: any) => {
         return res.status(400).json({ message: "All fields are required." });
     }
 
-    console.log(process.env.EMAIL_USER, process.env.EMAIL_PASS)
-
     try {
         await transport.sendMail({
-            from: `"bnabhotel" <${process.env.EMAIL_USER}>`, // <-- your TransIP mailbox
+            from: `"bnabhotel" <agapecastro81@gmail.com>`, // <-- your TransIP mailbox
             to: "castrolmkude@gmail.com", // where you receive messages
             subject: `[Contact Form] ${subject}`,
             html: `
