@@ -323,28 +323,33 @@ router.get('/room/:id', async (req: Request, res: any) => {
     }
 });
 
+// POST: Book rooms
 router.post("/bookings", authMiddleware, async (req: Request, res: any) => {
-    try {
-        const { rooms, totalAmount, specialRequests } = req.body;
-        const userId = req.user._id;
-        const user = await User.findById(userId);
-        if (!user || !user.isVerified) {
-            return res.status(404).json({ message: "You must login or verify your account!" });
-        }
+  try {
+    const { rooms, totalAmount, specialRequests } = req.body;
+    const userId = req.user._id;
 
-        if (!Array.isArray(rooms) || rooms.length === 0) {
-            return res.status(400).json({ message: "No rooms provided for booking" });
-        }
+    // 1️⃣ Get user
+    const user = await User.findById(userId);
+    if (!user || !user.isVerified) {
+      return res.status(404).json({ message: "You must login or verify your account!" });
+    }
 
-        const roomHtmlRows: string[] = [];
-        for (let i = 0; i < rooms.length; i++) {
-            const roomData = rooms[i];
-            const roomDoc = await Room.findById(roomData.room);
-            if (!roomDoc) {
-                return res.status(404).json({ message: `Room with ID ${roomData.room} not found` });
-            }
+    // 2️⃣ Validate rooms
+    if (!Array.isArray(rooms) || rooms.length === 0) {
+      return res.status(400).json({ message: "No rooms provided for booking" });
+    }
 
-            roomHtmlRows.push(`
+    // 3️⃣ Build HTML for room table
+    const roomHtmlRows: string[] = [];
+    for (let i = 0; i < rooms.length; i++) {
+      const roomData = rooms[i];
+      const roomDoc = await Room.findById(roomData.room);
+      if (!roomDoc) {
+        return res.status(404).json({ message: `Room with ID ${roomData.room} not found` });
+      }
+
+      roomHtmlRows.push(`
         <tr>
           <td style="padding: 10px; border: 1px solid #ddd;">${i + 1}</td>
           <td style="padding: 10px; border: 1px solid #ddd;">${roomDoc.title} (${roomData.roomType})</td>
@@ -357,102 +362,100 @@ router.post("/bookings", authMiddleware, async (req: Request, res: any) => {
           <td style="padding: 10px; border: 1px solid #ddd;">${new Date(roomData.checkOutDate).toLocaleDateString()}</td>
         </tr>
       `);
-        }
-
-        // Send one email with all rooms
-        await transport.sendMail({
-            from: `"BnB Hotel" <reservations@bnbhotelstanzania.com>`,
-            to: `bnabhotel@gmail.com`, // Booking notification email
-            subject: "🏨 New Room Booking Received",
-            html: `
-        <div style="font-family: Arial, sans-serif; padding: 20px;">
-          <h2 style="color: #333;">📬 New Booking Alert</h2>
-          <p><strong>Name:</strong> ${user.firstName}</p>
-          <p><strong>Email:</strong> ${user.email}</p>
-          <p><strong>Total Booking Amount:</strong> <span style="color: green;">$${totalAmount.toFixed(2)}</span></p>
-          <h3 style="margin-top: 20px;">Booking Details:</h3>
-          <table style="width: 100%; border-collapse: collapse; margin-top: 10px;">
-            <thead style="background-color: #f2f2f2;">
-              <tr>
-                <th style="padding: 10px; border: 1px solid #ddd;">#</th>
-                <th style="padding: 10px; border: 1px solid #ddd;">Room</th>
-                <th style="padding: 10px; border: 1px solid #ddd;">BedType</th>
-                <th style="padding: 10px; border: 1px solid #ddd;">Guests</th>
-                <th style="padding: 10px; border: 1px solid #ddd;">Price/Night</th>
-                <th style="padding: 10px; border: 1px solid #ddd;">Nights</th>
-                <th style="padding: 10px; border: 1px solid #ddd;">Subtotal</th>
-                <th style="padding: 10px; border: 1px solid #ddd;">Check-in</th>
-                <th style="padding: 10px; border: 1px solid #ddd;">Check-out</th>
-              </tr>
-            </thead>
-            <tbody>
-              ${roomHtmlRows.join("")}
-            </tbody>
-          </table>
-          <p style="margin-top: 20px;">📝 Special Requests: ${specialRequests || "None"}</p>
-        </div>
-      `,
-        });
-
-        await transport.sendMail({
-            from: `"BnB Hotel" <reservations@bnbhotelstanzania.com>`,
-            to: `<${user.email}>`,
-            subject: "🏨 Booking Confirmation - Thank You for Choosing bnbhotel!",
-            html: `
-  <div style="font-family: Arial, sans-serif; background-color: #f9f9f9; padding: 30px;">
-    <div style="max-width: 600px; margin: auto; background-color: #ffffff; border-radius: 10px; overflow: hidden; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
-      <div style="padding: 30px;">
-        <h2 style="color: #333;">🎉 Thank You for Booking with BnB Hotel!</h2>
-        <p style="font-size: 16px; color: #555;">Dear ${user.firstName},</p>
-
-        <p style="font-size: 16px; color: #555;">
-          We've received your booking and one of our agents will be in touch with you shortly to confirm the details. Your comfort and experience mean the world to us! 🌍✨
-        </p>
-
-        <hr style="border: none; border-top: 1px solid #eee; margin: 20px 0;" />
-
-        <p style="font-size: 16px; color: #555;">
-          If you have any questions, feel free to reach out to us.
-        </p>
-
-        <!-- Contact Info -->
-        <div style="margin-top: 20px; font-size: 15px; color: #444;">
-          📧 <strong>Email:</strong> bnabhotel@gmail.com <br/>
-          📞 <strong>Phone:</strong> +255 712 345 678 <br/>
-          🌐 <strong>Website:</strong> <a href="https://bnbhotelstanzania.com" style="color: #f97316;">bnbhotel.com</a>
-        </div>
-
-        <!-- Optional CTA -->
-        <div style="margin-top: 30px;">
-          <a href="https://bnbhotelstanzania.com" style="display: inline-block; padding: 12px 20px; background-color: #f97316; color: white; text-decoration: none; border-radius: 6px; font-weight: bold;">
-            Visit Our Website 🧭
-          </a>
-        </div>
-      </div>
-
-      <!-- Footer -->
-      <div style="background-color: #f3f3f3; padding: 15px; text-align: center; font-size: 13px; color: #777;">
-        &copy; ${new Date().getFullYear()} BnB Hotel, All Rights Reserved.
-      </div>
-    </div>
-  </div>
-  `,
-        });
-
-
-        const newBooking = new Booking({
-            user: user._id,
-            rooms,
-            totalAmount,
-            specialRequests,
-        });
-
-        await newBooking.save();
-        res.status(201).json({ message: "Room booked successfully" });
-    } catch (error) {
-        console.error(error);
-        res.status(500).json({ message: "Error submitting booking", error });
     }
+
+    // 4️⃣ Prepare email HTML content
+    const adminHtmlContent = `
+      <div style="font-family: Arial, sans-serif; padding: 20px;">
+        <h2>📬 New Booking Alert</h2>
+        <p><strong>Name:</strong> ${user.firstName} ${user.lastName}</p>
+        <p><strong>Email:</strong> ${user.email}</p>
+        <p><strong>Total Booking Amount:</strong> $${totalAmount.toFixed(2)}</p>
+        <h3>Booking Details:</h3>
+        <table style="width: 100%; border-collapse: collapse; margin-top: 10px;">
+          <thead style="background-color: #f2f2f2;">
+            <tr>
+              <th style="padding: 10px; border: 1px solid #ddd;">#</th>
+              <th style="padding: 10px; border: 1px solid #ddd;">Room</th>
+              <th style="padding: 10px; border: 1px solid #ddd;">BedType</th>
+              <th style="padding: 10px; border: 1px solid #ddd;">Guests</th>
+              <th style="padding: 10px; border: 1px solid #ddd;">Price/Night</th>
+              <th style="padding: 10px; border: 1px solid #ddd;">Nights</th>
+              <th style="padding: 10px; border: 1px solid #ddd;">Subtotal</th>
+              <th style="padding: 10px; border: 1px solid #ddd;">Check-in</th>
+              <th style="padding: 10px; border: 1px solid #ddd;">Check-out</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${roomHtmlRows.join("")}
+          </tbody>
+        </table>
+        <p>📝 Special Requests: ${specialRequests || "None"}</p>
+      </div>
+    `;
+
+    const clientHtmlContent = `
+      <div style="font-family: Arial, sans-serif; background-color: #f9f9f9; padding: 30px;">
+        <div style="max-width: 600px; margin: auto; background-color: #ffffff; border-radius: 10px; overflow: hidden; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
+          <div style="padding: 30px;">
+            <h2>🎉 Thank You for Booking with BnB Hotel!</h2>
+            <p>Dear ${user.firstName},</p>
+            <p>We've received your booking and one of our agents will contact you shortly to confirm the details. Your comfort matters to us! 🌍✨</p>
+            <hr style="border: none; border-top: 1px solid #eee; margin: 20px 0;" />
+            <p>If you have any questions, feel free to reach out.</p>
+            <div style="margin-top: 20px; font-size: 15px; color: #444;">
+              📧 <strong>Email:</strong> bnabhotel@gmail.com <br/>
+              📞 <strong>Phone:</strong> +255 712 345 678 <br/>
+              🌐 <strong>Website:</strong> <a href="https://bnbhotelstanzania.com">bnbhotel.com</a>
+            </div>
+            <div style="margin-top: 30px;">
+              <a href="https://bnbhotelstanzania.com" style="display: inline-block; padding: 12px 20px; background-color: #f97316; color: white; text-decoration: none; border-radius: 6px; font-weight: bold;">
+                Visit Our Website 🧭
+              </a>
+            </div>
+          </div>
+          <div style="background-color: #f3f3f3; padding: 15px; text-align: center; font-size: 13px; color: #777;">
+            &copy; ${new Date().getFullYear()} BnB Hotel, All Rights Reserved.
+          </div>
+        </div>
+      </div>
+    `;
+
+    // 5️⃣ Send emails concurrently
+    await Promise.all([
+      // Admin email
+      transport.sendMail({
+        from: `"BnB Hotel" <reservations@bnbhotelstanzania.com>`,
+        to: "bnabhotel@gmail.com",
+        subject: "🏨 New Room Booking Received",
+        html: adminHtmlContent,
+      }),
+
+      // Client confirmation email
+      transport.sendMail({
+        from: `"BnB Hotel" <reservations@bnbhotelstanzania.com>`,
+        to: user.email,
+        subject: "🏨 Booking Confirmation - Thank You for Choosing BnB Hotel!",
+        html: clientHtmlContent,
+        replyTo: "bnabhotel@gmail.com",
+      }),
+    ]);
+
+    // 6️⃣ Save booking
+    const newBooking = new Booking({
+      user: user._id,
+      rooms,
+      totalAmount,
+      specialRequests,
+    });
+
+    await newBooking.save();
+
+    res.status(201).json({ message: "Room booked successfully" });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Error submitting booking", error });
+  }
 });
 
 
