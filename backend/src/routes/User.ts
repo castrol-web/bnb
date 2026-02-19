@@ -163,9 +163,9 @@ router.post("/contact", async (req: Request, res: any) => {
 
     try {
         await transport.sendMail({
-            from: `"bnabhotel" <reservations@bnbhotelstanzania.com>`, // <-- your TransIP mailbox
-            to: "agapecastro81@gmail.com", // where you receive messages
-            subject: `[Contact Form] ${subject}`,
+            from: `"${name}" <${email}>`, // sender's email
+            to: "bnabhotel@gmail.com", // where you receive messages
+            subject: `${subject}`,
             html: `
                 <p><strong>Name:</strong> ${name}</p>
                 <p><strong>Email:</strong> ${email}</p>
@@ -362,7 +362,7 @@ router.post("/bookings", authMiddleware, async (req: Request, res: any) => {
         // Send one email with all rooms
         await transport.sendMail({
             from: `"BnB Hotel" <reservations@bnbhotelstanzania.com>`,
-            to: `agapecastro81@gmail.com`, // Booking notification email
+            to: `bnabhotel@gmail.com`, // Booking notification email
             subject: "🏨 New Room Booking Received",
             html: `
         <div style="font-family: Arial, sans-serif; padding: 20px;">
@@ -417,7 +417,7 @@ router.post("/bookings", authMiddleware, async (req: Request, res: any) => {
 
         <!-- Contact Info -->
         <div style="margin-top: 20px; font-size: 15px; color: #444;">
-          📧 <strong>Email:</strong> support@bnbhotel.com <br/>
+          📧 <strong>Email:</strong> bnabhotel@gmail.com <br/>
           📞 <strong>Phone:</strong> +255 712 345 678 <br/>
           🌐 <strong>Website:</strong> <a href="https://bnbhotelstanzania.com" style="color: #f97316;">bnbhotel.com</a>
         </div>
